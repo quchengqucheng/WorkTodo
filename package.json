@@ -1,0 +1,29 @@
+{
+  "name": "qucheng",
+  "version": "1.0.0",
+  "description": "learn grunt",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quchengqucheng/trygrunt.git"
+  },
+  "author": "qucheng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quchengqucheng/trygrunt/issues"
+  },
+  "homepage": "https://github.com/quchengqucheng/trygrunt#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-less": "^1.3.0",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-watch": "^1.0.0"
+  }
+}
