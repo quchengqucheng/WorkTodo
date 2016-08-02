@@ -1,28 +1,25 @@
 define(['util', 'data'], function(_, d) {
+
 /*-------------------------------------------------------------tree----------------------------------------------------------*/
-
-
-var traverse = [];// 储存创建的node节点
-var queue = [];   // 储存遍历的div节点
-var search = [];  // 储存搜索到div节点 用于清空样式
-// 多叉树结点的构造函数
-function Node(data,text,amount,childNode,FatherNode) {
-	this.data = data; 		   // 存放当前div
-	this.text = text;		   // 节点名称
-	this.amount= amount;       // 子孩子个数
-	this.childNode =[];   	   // 子孩子节点
-	this.FatherNode = FatherNode;//父亲节点
+var traverse = [];													// 储存创建的node节点
+var queue = [];   													// 储存遍历的div节点
+var search = [];  													// 储存搜索到div节点 用于清空样式
+function Node(data,text,amount,childNode,FatherNode) {  			// 多叉树结点的构造函数
+	this.data = data; 		  										// 存放当前div
+	this.text = text;		   										// 节点名称
+	this.amount= amount;       										// 子孩子个数
+	this.childNode =[];   	   										// 子孩子节点
+	this.FatherNode = FatherNode;								    //父亲节点
 }
 var rt;
 function initTree() {
 	rt = createTree(d.treedata);
-	order(rt,_.$("root"));//同时执行吗？
+	order(rt,_.$("root"));
 	console.log(rt);
 }
 
-var signNode;//记录添加初始数据的结点
-// 创建多叉树
-function createTree(treedata) {
+var signNode;														//记录添加初始数据的结点
+function createTree(treedata) {										// 创建多叉树
 	var root;
 	console.log(treedata.length);
 	createNode(treedata);
@@ -65,9 +62,7 @@ function howManyKeys(data) {
 	return num;
 }
 
-
-// 渲染多叉树
-function renderTree(value,childType) {
+function renderTree(value,childType) {								// 渲染多叉树
 		var childDiv = document.createElement("div");
 		var span  = document.createElement("span");
 		var div  = document.createElement("div");
@@ -77,7 +72,7 @@ function renderTree(value,childType) {
 		var addClassifySign = document.createElement("i");
 		var addTaskSign     = document.createElement("i");
 
-		if(childType===0){//添加新任务
+		if(childType===0){											//添加新任务
 			i.setAttribute("class","fa fa-file-text-o tree-title-sign");
 			i.style.display = "inline-block";
 			span.innerHTML = value;
@@ -85,7 +80,7 @@ function renderTree(value,childType) {
 			deletSign.setAttribute("class","fa fa-trash-o tree-delet");
 			childDiv.setAttribute("class","child");
 			childDiv.style.display = "block";
-			childDiv.value = value;//记录节点名称
+			childDiv.value = value;									//记录节点名称
 			div.setAttribute("class","i-collect");
 			childDiv.appendChild(i);
 			div2.setAttribute("class","tree-title-box");
@@ -93,7 +88,7 @@ function renderTree(value,childType) {
 			div2.appendChild(div);
 			childDiv.appendChild(div2);
 
-		}  else {   //添加新分类
+		}  else {   												//添加新分类
 			i.setAttribute("class","fa fa-folder-open-o tree-title-sign");
 			i.style.display = "inline-block";
 			span.innerHTML = value;
@@ -103,7 +98,7 @@ function renderTree(value,childType) {
 			deletSign.setAttribute("class","fa fa-trash-o tree-delet");
 			childDiv.setAttribute("class","child");
 			childDiv.style.display = "block";
-			childDiv.value = value;//记录节点名称
+			childDiv.value = value;									//记录节点名称
 			childDiv.setAttribute("id",d.fatherIdArr[d.fatherIdnum++]);
 			div.setAttribute("class","i-collect");
 			if(value == "任务列表")
@@ -134,10 +129,8 @@ function order(rt,parentDiv) {
 		order(rt.childNode[i],childDiv);
 	}
 }
-//停止遍历、搜索
-function clearAll() {
-	//已搜索到的元素恢复为原样式
-	function cleanShow(search) {
+function clearAll() {          										//停止遍历、搜索
+	function cleanShow(search) {									//已搜索到的元素恢复为原样式
 		while(search.length>0) {
 			search.shift().firstChild.nextSibling.id ="";
 		}
@@ -145,8 +138,8 @@ function clearAll() {
  	queue = [];
  	cleanShow(search);
 }
-// 遍历过程中展示正在遍历的元素
-function show(queue,value,rt) {
+
+function show(queue,value,rt) {										// 遍历过程中展示正在遍历的元素
 	var count = 0;
 	var findoutDiv = [];
 	console.log(typeof(value));
@@ -161,7 +154,7 @@ function show(queue,value,rt) {
 		}//if(findoutDiv.length>0)
 		var valueMatch = new RegExp(value, 'gi');
 
-		if(value!==null&&valueMatch.test(div.value.toString())) {//搜索到元素
+		if(value!==null&&valueMatch.test(div.value.toString())) {	//搜索到元素
 			div.firstChild.nextSibling.className = "tree-title-box highlight";
 			findoutDiv.push(div);
 			count++;
@@ -173,14 +166,14 @@ function show(queue,value,rt) {
     	else Inputprompt.noteText("alertText","查询到"+count+"个元素","green");
 	}
 	function Order(rt) {
-		if(rt.data===findDiv){        //无Bug
+		if(rt.data===findDiv){        
 			if(!rt.FatherNode) return;
 			rt.FatherNode.data.firstChild.className = "fa fa-folder-open-o tree-title-sign";
 			for(var j=0;j<rt.FatherNode.childNode.length;j++) {
 		       	rt.FatherNode.childNode[j].data.style.display = "block";
 			}
 			var grandeNode = rt.FatherNode;
-			while(grandeNode.FatherNode!==null) {//有父节点，父节点展开
+			while(grandeNode.FatherNode!==null) {					//有父节点，父节点展开
 				grandeNode.FatherNode.data.firstChild.className = "fa fa-folder-open-o tree-title-sign";
 				for(j=0;j<grandeNode.FatherNode.childNode.length;j++) {
 			       	grandeNode.FatherNode.childNode[j].data.style.display = "block";
@@ -197,8 +190,8 @@ function show(queue,value,rt) {
 	}//Order(rt)
 
 }
-// 先序遍历
-function preOrder(rt) {
+																
+function preOrder(rt) {												// 先序遍历
 	if(rt!==null) {
 		queue.push(rt.data);
 		for(var i=0;i<rt.childNode.length;i++) {
@@ -212,118 +205,116 @@ var inputTextFocus;
 var nowChangeli;
 function initAddListener() {
 
-				_.$.delegate(_.$("tree"),"i", "click", clickHandle);
-				_.$.delegate(_.$("task-ul-one"),"span", "click", clickHandle);
-				_.addEvent(_.$("fast-add-task-btn"), "click", clickHandle);
-				_.addEvent(_.$("fast-task-list"), "click", showOrClose);
-				_.$.delegate(_.$$("right-section")[0],"i", "click", clickHandle);
-				_.$.delegate(_.$("task-ul-one"),"span", "click", Tasklist.taskMoreHandle);
-				_.$.delegate(_.$$("right-section")[0],"div", "click", Tasklist.taskDoneHandle);
+	_.$.delegate(_.$("tree"),"i", "click", clickHandle);
+	_.$.delegate(_.$("task-ul-one"),"span", "click", clickHandle);
+	_.addEvent(_.$("fast-add-task-btn"), "click", clickHandle);
+	_.addEvent(_.$("fast-task-list"), "click", showOrClose);
+	_.$.delegate(_.$$("right-section")[0],"i", "click", clickHandle);
+	_.$.delegate(_.$("task-ul-one"),"span", "click", Tasklist.taskMoreHandle);
+	_.$.delegate(_.$$("right-section")[0],"div", "click", Tasklist.taskDoneHandle);
 
-				_.addEvent(_.$$("theme-color")[0],"click",function(e) {
-					if(e.target.nodeName.toLowerCase() === "button") {
-						console.log(e.target.className);
-						document.getElementsByTagName('body')[0].className = "theme-" + e.target.className;
-						_.$$("settings")[0].style.display = "none";
-						localStorage.setItem('color',"theme-" + e.target.className );
-					}
-				});
-				_.addEvent(_.$$("font-size")[0],"click",function(e) {
-					if(e.target.nodeName.toLowerCase() === "button") {
-						console.log(e.target.className);
-						document.getElementsByTagName('html')[0].className = "theme-" + e.target.className;
-						_.$$("settings")[0].style.display = "none";
-						localStorage.setItem('font',"theme-" + e.target.className );
-					}
-				});
-				_.addEvent(_.$$("fa fa-cog fa-2x")[0],"click",function(e) {
-					if(e.target.nodeName.toLowerCase() === "i") {
-						console.log("focus");
-						if(_.$$("settings")[0].style.display === "block")
-							_.$$("settings")[0].style.display = "none";
-						else
-							_.$$("settings")[0].style.display = "block";
-					}
-				});
+	_.addEvent(_.$$("theme-color")[0],"click",function(e) {
+		if(e.target.nodeName.toLowerCase() === "button") {
+			console.log(e.target.className);
+			document.getElementsByTagName('body')[0].className = "theme-" + e.target.className;
+			_.$$("settings")[0].style.display = "none";
+			localStorage.setItem('color',"theme-" + e.target.className );
+		}
+	});
+	_.addEvent(_.$$("font-size")[0],"click",function(e) {
+		if(e.target.nodeName.toLowerCase() === "button") {
+			console.log(e.target.className);
+			document.getElementsByTagName('html')[0].className = "theme-" + e.target.className;
+			_.$$("settings")[0].style.display = "none";
+			localStorage.setItem('font',"theme-" + e.target.className );
+		}
+	});
+	_.addEvent(_.$$("fa fa-cog fa-2x")[0],"click",function(e) {
+		if(e.target.nodeName.toLowerCase() === "i") {
+			console.log("focus");
+			if(_.$$("settings")[0].style.display === "block")
+				_.$$("settings")[0].style.display = "none";
+			else
+				_.$$("settings")[0].style.display = "block";
+		}
+	});
 
-				function showOrClose(e) {
-					if(e.target.className ==="fa fa-bolt tree-title-sign") {
-						console.log("preOrderHHA");
-						var childs = e.target.parentNode.getElementsByClassName("child");
-						console.log(childs.length);
-						for(var i=0;i<childs.length;i++) {
-							if(childs[i].style.display==="block")
-								childs[i].style.display = "none";
-							else
-								childs[i].style.display = "block";
-						}
-					}
-				}
-				// var popupId;
-				function clickHandle(e) {
-					var arrMatch = {
-						"fa fa-folder-o tree-add":"popup-add-classify",
-						"fa fa-plus-circle task-add":"popup-add-task",
-						"fa fa-trash-o tree-delet":"popup-del-classify",
-						"task-list-title": "popup-task-more",
-						"fast-add-task": "popup-add-fast-task",
-						"fa fa-pencil-square-o fa-lg": "popup-add-task",
-						"fa fa-pencil-square-o fa-lg fast-change-list": "popup-add-fast-task"
-					};
+	function showOrClose(e) {
+		if(e.target.className ==="fa fa-bolt tree-title-sign") {
+			console.log("preOrderHHA");
+			var childs = e.target.parentNode.getElementsByClassName("child");
+			console.log(childs.length);
+			for(var i=0;i<childs.length;i++) {
+				if(childs[i].style.display==="block")
+					childs[i].style.display = "none";
+				else
+					childs[i].style.display = "block";
+			}
+		}
+	}
+	// var popupId;
+	function clickHandle(e) {
+		var arrMatch = {
+			"fa fa-folder-o tree-add":"popup-add-classify",
+			"fa fa-plus-circle task-add":"popup-add-task",
+			"fa fa-trash-o tree-delet":"popup-del-classify",
+			"task-list-title": "popup-task-more",
+			"fast-add-task": "popup-add-fast-task",
+			"fa fa-pencil-square-o fa-lg": "popup-add-task",
+			"fa fa-pencil-square-o fa-lg fast-change-list": "popup-add-fast-task"
+		};
 
-					if(arrMatch[e.target.className.toLowerCase()]) {
-						var popupId = arrMatch[e.target.className.toLowerCase()];
-						console.log(e.target);
-						console.log(popupId);
-						clearPopup();
-						_.$(popupId).style.display = "flex";
-						
-					}
-
-					if(e.target.className.toLowerCase() === "fa fa-pencil-square-o fa-lg") {
-						
-						for(var i=0;i<tasklistArr.length;i++) {
-							if(e.target.parentNode.parentNode===tasklistArr[i].li) {
-								nowChangeli = tasklistArr[i];
-								_.$("text").value = tasklistArr[i].endTime;
-								_.$("task-input-title").value = tasklistArr[i].title;
-								_.$("task-input-content").value = tasklistArr[i].content;
-								_.$("popup-add-task").getElementsByTagName("h1")[0].innerHTML = "编辑任务";
-								// _.$("popup-add-task").getElementsByClassName("btn-ok")[0].id = "change-task-btn";
-								
-							}
-						}
+		if(arrMatch[e.target.className.toLowerCase()]) {
+			var popupId = arrMatch[e.target.className.toLowerCase()];
+			console.log(e.target);
+			console.log(popupId);
+			clearPopup();
+			_.$(popupId).style.display = "flex";
 			
-					}
-					else if(e.target.className.toLowerCase() === "fa fa-pencil-square-o fa-lg fast-change-list") {
-						for(var k=0;k<tasklistArr.length;k++) {
-							if(e.target.parentNode.parentNode===tasklistArr[k].li) {
-								nowChangeli = tasklistArr[k];
-								
-								_.$("fast-task-input-title").value = tasklistArr[k].title;
-					
-								_.$("popup-add-fast-task").getElementsByTagName("h1")[0].innerHTML = "编辑快速任务";	
-							}
-						}
-					}
+		}
 
-						//添加任务时的浮出层内容界面
-						var content = _.$("popup-add-task-content");
-						content.parentNode.removeChild(content);
-						_.$("popup-add-task").getElementsByTagName("section")[0].appendChild(content);
-						content.style.display = "block";
-				
-					}
+		if(e.target.className.toLowerCase() === "fa fa-pencil-square-o fa-lg") {
+			
+			for(var i=0;i<tasklistArr.length;i++) {
+				if(e.target.parentNode.parentNode===tasklistArr[i].li) {
+					nowChangeli = tasklistArr[i];
+					_.$("text").value = tasklistArr[i].endTime;
+					_.$("task-input-title").value = tasklistArr[i].title;
+					_.$("task-input-content").value = tasklistArr[i].content;
+					_.$("popup-add-task").getElementsByTagName("h1")[0].innerHTML = "编辑任务";
+					
+				}
+			}
+
+		}
+		else if(e.target.className.toLowerCase() === "fa fa-pencil-square-o fa-lg fast-change-list") {
+			for(var k=0;k<tasklistArr.length;k++) {
+				if(e.target.parentNode.parentNode===tasklistArr[k].li) {
+					nowChangeli = tasklistArr[k];
+					
+					_.$("fast-task-input-title").value = tasklistArr[k].title;
+		
+					_.$("popup-add-fast-task").getElementsByTagName("h1")[0].innerHTML = "编辑快速任务";	
+				}
+			}
+		}
+
+																	//添加任务时的浮出层内容界面
+			var content = _.$("popup-add-task-content");
+			content.parentNode.removeChild(content);
+			_.$("popup-add-task").getElementsByTagName("section")[0].appendChild(content);
+			content.style.display = "block";
+	
+		}
 
 	_.$("tree").addEventListener('click',function(e){
        if((e.target||e.srcElement)&&(e.target.className==="fa fa-folder-open-o tree-title-sign"||e.target.className==="fa fa-folder-open tree-title-sign")) {
-	       	// var treeTitle = e.target;
 	       	var treeSign= e.target;
 	       	var len;
 	       	Order(rt);
 	       	console.log(len);
 	       	if(len) {
-	       		if(treeSign.className==="tree-title-box") {//fa fa-folder-open 选中节点更改图标
+	       		if(treeSign.className==="tree-title-box") {			//fa fa-folder-open 选中节点更改图标
 		       		treeSign =treeSign.previousSibling;
 		       	}
 		       	if(treeSign.className==="fa fa-folder-open-o tree-title-sign") {
@@ -349,7 +340,7 @@ function initAddListener() {
 	    	
 	    }
 	     	function Order(rt) {
-				if(rt.data===treeSign.parentNode){        //找到选中节点 更改子元素display
+				if(rt.data===treeSign.parentNode){        			//找到选中节点 更改子元素display
 					len = rt.childNode.length;
 					for(var i=0;i<rt.childNode.length;i++) {
 						if(rt.childNode[i].data.style.display === "block")
@@ -398,12 +389,10 @@ function initAddListener() {
 			_.$("del-classify-btn").addEventListener('click',function(){
 
 			console.log("delet");
-			// choseDiv = e.target.parentNode.parentNode.parentNode;
 			clearAll();
-			Order(rt);//从存储树的结构中删除节点，遍历多叉树找到节点位置
+			Order(rt);											//从存储树的结构中删除节点，遍历多叉树找到节点位置
 			function Order(rt) {
-				//if(rt.text===choseDiv.value) { //节点的名称如果相同则有Bug
-				if(rt.data===choseDiv){          //无Bug
+				if(rt.data===choseDiv){          
 					console.log(rt.text);
 					var num = rt.FatherNode.childNode.indexOf(rt);
 					console.log(num);
@@ -420,7 +409,7 @@ function initAddListener() {
 					}
 				}
 			}
-			//从它的父元素中删除子元素,从dom中删除
+																//从它的父元素中删除子元素,从dom中删除
 			if (choseDiv.parentNode) {
 				choseDiv.parentNode.removeChild(choseDiv);
 			}
@@ -451,21 +440,21 @@ function initAddListener() {
 			var node = new Node(null,value,0,null,null);
 			var childDiv =  renderTree(value);
                        
-			d.fatherIdArr.pop();                                           //新的结点渲染到页面上后删除该结点的id
-			d.fatherIdArr.splice(jsq, 0, "fatherId"+d.fatherIdjsq++);        //更新该结点id在id数组中的位置
+			d.fatherIdArr.pop();                                            	//新的结点渲染到页面上后删除该结点的id
+			d.fatherIdArr.splice(jsq, 0, "fatherId"+d.fatherIdjsq++);        	//更新该结点id在id数组中的位置
 			Storage.treeNodeIdChange(jsq);
-			choseDiv.appendChild(childDiv);//新节点加入到选中节点中
+			choseDiv.appendChild(childDiv);                                  	//新节点加入到选中节点中
 
-			Order(rt);//遍历找到选中节点 
+				Order(rt);														//遍历找到选中节点 
 			function Order(rt) {
-				if(rt.data===choseDiv) {//选中节点图标更新
+				if(rt.data===choseDiv) {									 	//选中节点图标更新
 					rt.childNode.push(node);
 					node.FatherNode = rt;
-					rt.data.firstChild.style.display = "inline-block";//fa fa-folder-open-o tree-title-sign
+					rt.data.firstChild.style.display = "inline-block";			//fa fa-folder-open-o tree-title-sign
 					rt.data.firstChild.className = "fa fa-folder-open-o tree-title-sign";
 					node.data = childDiv;
 					
-					for(var i=0;i<rt.childNode.length;i++) {//选中节点子节点展开
+					for(var i=0;i<rt.childNode.length;i++) {					//选中节点子节点展开
 						rt.childNode[i].data.style.display = "block";
 					}
 					return;
@@ -484,7 +473,7 @@ function initAddListener() {
 		var value   = Inputprompt.addcheckInputText("alertText3",_.$("task-input-title"));
 		var content = Inputprompt.addcheckInputText("alertText3",_.$("task-input-content"));
 		var endTime = _.$("text").value;
-		if(_.$("h1Name").innerHTML === "编辑任务") {                                  //编辑任务
+		if(_.$("h1Name").innerHTML === "编辑任务") {                          	//编辑任务
 			console.log("编辑任务");
 			if(value!==null&&value!=="") { 
 				var pos = tasklistArr.indexOf(nowChangeli);
@@ -498,21 +487,20 @@ function initAddListener() {
 				_.$("h1Name").innerHTML = "添加任务";
 			}
 
-		}else {  																	  //添加任务                                                                              
+		}else {  																//添加任务                                                                              
 			if(value!==null&&value!=="") { 
 				_.$("popup-add-task").style.display = "none"; 
 				console.log(value,content);
 				var node = new Node(null,value,0,null,null);
 				var childDiv =  renderTree(value,0);
-				choseDiv.appendChild(childDiv);//新节点加入到选中节点中
+				choseDiv.appendChild(childDiv);									//新节点加入到选中节点中
 
-				Order(rt);//遍历找到选中节点 
+				Order(rt);														//遍历找到选中节点 
 				function Order(rt) {
-					if(rt.data===choseDiv) {//选中节点图标更新
+					if(rt.data===choseDiv) {									//选中节点图标更新
 						rt.childNode.push(node);
 						node.FatherNode = rt;
-						rt.data.firstChild.style.display = "inline-block";//fa fa-folder-open-o tree-title-sign
-						// rt.data.firstChild.className = "fa fa-folder-open-o tree-title-sign";
+						rt.data.firstChild.style.display = "inline-block";		//fa fa-folder-open-o tree-title-sign
 						rt.data.firstChild.className = "fa fa-folder-open-o tree-title-sign";
 						node.data = childDiv;
 						console.log(rt.data.id);
@@ -526,15 +514,15 @@ function initAddListener() {
 							"type" : "normal"
 						};
 
-						var newtask = new Tasklist(taskone);//把任务添加到右侧任务列表中
+						var newtask = new Tasklist(taskone);					//把任务添加到右侧任务列表中
 						newtask.init(newtask);
 						tasklistArr.push(newtask);
 
-						//文件夹内部添加任务，文件夹后面的数字+1
+																				//文件夹内部添加任务，文件夹后面的数字+1
 						var fileTitleName = rt.data.getElementsByClassName("tree-title")[0].innerHTML;
 						rt.data.getElementsByClassName("tree-title")[0].innerHTML = numOfTasks(fileTitleName,"add");
 
-						for(var j=0;j<rt.childNode.length;j++) {//选中节点子节点展开
+						for(var j=0;j<rt.childNode.length;j++) {				//选中节点子节点展开
 							rt.childNode[j].data.style.display = "block";
 						}
 						return;
@@ -553,23 +541,23 @@ function initAddListener() {
 	} ,false);
 
 
-	//编辑、添加快速任务
+																				//编辑、添加快速任务
 	_.$("add-fast-task").addEventListener('click',function() {
-		if(_.$("fastH1Name").innerHTML === "编辑快速任务") {   //编辑快速任务
+		if(_.$("fastH1Name").innerHTML === "编辑快速任务") {   					//编辑快速任务
 
 			console.log("编辑快速任务");
 
 			var pos = tasklistArr.indexOf(nowChangeli);
 			nowChangeli.title = _.$("fast-task-input-title").value;
-			//更改左侧树结点的标题
+																				//更改左侧树结点的标题
 			nowChangeli.li.getElementsByClassName("task-list-title")[0].innerHTML = _.$("fast-task-input-title").value;
 			nowChangeli.cnode.getElementsByClassName("tree-title")[0].innerHTML = _.$("fast-task-input-title").value;
 			_.$("popup-add-fast-task").style.display = "none";
 			_.$("fastH1Name").innerHTML = "添加快速任务";
 
-		}else {												  //添加快速任务
-			var value = Inputprompt.addcheckInputText("alertText4",_.$("fast-task-input-title"));//把任务添加到左侧任务列表中
-			if(value!==null&&value!=="")  {
+		}else {												  					//添加快速任务
+			var value = Inputprompt.addcheckInputText("alertText4",_.$("fast-task-input-title"));
+			if(value!==null&&value!=="")  {										//把任务添加到左侧任务列表中
 				var childDiv =  renderTree(value,0);
 				_.$("fast-task-list").appendChild(childDiv);
 
@@ -581,7 +569,7 @@ function initAddListener() {
 					"type" : "fast"
 				};
 
-				var newtask = new Tasklist(taskone);//把任务添加到右侧任务列表中
+				var newtask = new Tasklist(taskone);							//把任务添加到右侧任务列表中
 				newtask.init(newtask);
 				tasklistArr.push(newtask);
 
@@ -634,14 +622,14 @@ function initAddListener() {
 
 		if(_.$("endtime-sort").className === "ascending") {
 			copyTasklistArr.sort(function(a, b) { 
-		    	if(a.endTime >= b.endTime ) return 1;//降序 
+		    	if(a.endTime >= b.endTime ) return 1;							//降序 
 		    	else return -1;
 		    });
 			_.$("endtime-sort").className = "descending";
 		}
 		else {
 			copyTasklistArr.sort(function(a, b) { 
-			    	if(a.endTime <= b.endTime ) return 1;//升序 // return b.endTime - a.endTime; 比较字符串形式不能用'-'
+			    	if(a.endTime <= b.endTime ) return 1;						//升序return b.endTime - a.endTime; 比较字符串形式不能用'-'
 			    	else return -1;
 		    });
 			_.$("endtime-sort").className = "ascending";
@@ -681,9 +669,6 @@ function numOfTasks(fileTitleName,operating) {
 	return fileTitleName;
 
 }
-
-
-
 
 /*--------------------------------------------------popup----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------------------------------------------------*/
@@ -766,11 +751,9 @@ SuperPopup.prototype.AddListener = {
 };
 
 
-
-
 /*=========================================================calender==========================================================*/
 
-var todayDate;//记录今日日期，用于刷新浮出层上显示的日期
+var todayDate;																//记录今日日期，用于刷新浮出层上显示的日期
 var weekDay = ["日","一","二","三","四","五","六"];
 function calendar() {
 
@@ -789,7 +772,7 @@ calendar.prototype = {
 		if(today.month<10) today.month="0"+today.month;
 		if(today.year <10) today.year ="0"+today.year;
 		if(today.day  <10) today.day  ="0"+today.day;
-		todayDate =  today.year+"-"+today.month+"-"+today.day;//记录今日日期，用于刷新浮出层上显示的日期
+		todayDate =  today.year+"-"+today.month+"-"+today.day;				//记录今日日期，用于刷新浮出层上显示的日期
 
 		this.selectDay(this);
 		this.selectYear(this);
@@ -897,7 +880,7 @@ calendar.prototype = {
 	 		_.$$("calendar")[0].style.display ="none";
 	 	}
 	},
-	getYMD:function(today) {//得到一个标准Date的本地时间的年月日
+	getYMD:function(today) {													//得到一个标准Date的本地时间的年月日
 		var YMD = {};
 		YMD.year  = today.getFullYear();
 		YMD.month = today.getMonth();
@@ -953,11 +936,10 @@ calendar.prototype = {
 		var year = _.$("calendar-year").innerHTML;
 		var month = _.$("calendar-month").innerHTML;
 		console.log(year,month);
-		var firstday = new Date(year,month-1,1);//本月第一天
-		var lastday  = new Date(year,month,0);  //本月最后一天
-		var first = this.getYMD(firstday);  //
+		var firstday = new Date(year,month-1,1);									//本月第一天
+		var lastday  = new Date(year,month,0);  									//本月最后一天
+		var first = this.getYMD(firstday);  
 		var last  = this.getYMD(lastday);
-		//console.log(firstday,lastday,first,last);
 		var daysInMonth = last.day;
 		if(_.$("tableBody")){
 			_.$("calendar-cells").removeChild(_.$("tableBody"));
@@ -966,7 +948,7 @@ calendar.prototype = {
 			var table = document.createElement("table");
 			var tbody = document.createElement("tbody");
 
-			table.setAttribute("id","tableBody");       //????????????????????????????用id吗？用！
+			table.setAttribute("id","tableBody");      								 //用id
 			var num = ( first.weekday + last.day )%7;
 			var cells,rows,jsq=0;
 			if(num === 0) {cells = first.weekday + last.day;}
@@ -1003,7 +985,7 @@ calendar.prototype = {
 	selectYear:function(calendar) {
 		window.addEventListener("click",function(e) {
 			var hasClassName = /click-year-box/gi;
-			if((e.target||e.srcElement)&&hasClassName.test(e.target.className.toLowerCase()) ) { //继承？？？？？
+			if((e.target||e.srcElement)&&hasClassName.test(e.target.className.toLowerCase()) ) {
 				var selectYearBox = _.$("calendar1").getElementsByClassName('calendar-year-select')[0];
 				calendar.selectBoxDisplay(selectYearBox);
 			}
@@ -1062,7 +1044,7 @@ calendar.prototype = {
 	
 			}
 		},false);
-		window.addEventListener("mouseover",function(e) {//空白hover不变色
+		window.addEventListener("mouseover",function(e) {								//空白hover不变色
 			if((e.target||e.srcElement)&&e.target.nodeName.toLowerCase()==="td"){
 			 	if(e.target.innerHTML === "") {
 			 		e.target.style.backgroundColor = "#fff";
@@ -1071,7 +1053,7 @@ calendar.prototype = {
 		},false);
 	},
 	showCld:function() {
-		window.addEventListener("click",function(e) {//空白hover不变色
+		window.addEventListener("click",function(e) {									//空白hover不变色
 			if((e.target||e.srcElement)&&e.target.nodeName.toLowerCase()==="input"){
 			 	if(_.$$("calendar")[0].style.display === "none") {
 			 		_.$$("calendar")[0].style.display ="block";
@@ -1086,16 +1068,16 @@ calendar.prototype = {
 /*=======================================================================task-list==================================================*/
 
 
-var tasklistArr = [];//储存添加到右侧的任务条 创建的Tasklist
+var tasklistArr = [];																	//储存添加到右侧的任务条 创建的Tasklist
 function Tasklist(task) {
 	this.fatherId=task.fatherId;
 	this.title = task.title;
-	this.cnode = task.cnode;//记录左侧任务本身节点
-	this.pnode = task.pnode;//记录左侧任务的父亲节点
+	this.cnode = task.cnode;															//记录左侧任务本身节点
+	this.pnode = task.pnode;															//记录左侧任务的父亲节点
 	this.content = task.content;
 	this.endTime = task.endTime;
 	this.type = task.type;
-	this.li = null;//存储添加到右侧的任务条
+	this.li = null;																		//存储添加到右侧的任务条
 
 }
 Tasklist.prototype = {
@@ -1155,16 +1137,16 @@ var Tasklist = (function(mod){
 			e.target.parentNode.className = "task-list task-list-del";
 
 			setTimeout(function() {
-				e.target.parentNode.parentNode.removeChild(e.target.parentNode );//删除右侧任务条
+				e.target.parentNode.parentNode.removeChild(e.target.parentNode );		//删除右侧任务条
 				for(var i=0;i<tasklistArr.length;i++) {
 					if(e.target.parentNode === tasklistArr[i].li) {
-						tasklistArr[i].pnode.removeChild(tasklistArr[i].cnode);	//删除左侧任务条
+						tasklistArr[i].pnode.removeChild(tasklistArr[i].cnode);			//删除左侧任务条
 
-					//文件夹内部删除任务，文件夹后面的数字-1
+																						//文件夹内部删除任务，文件夹后面的数字-1
 					var fileTitleName = tasklistArr[i].pnode.getElementsByClassName("tree-title")[0].innerHTML;
 					tasklistArr[i].pnode.getElementsByClassName("tree-title")[0].innerHTML = numOfTasks(fileTitleName,"sub");
 
-					tasklistArr.splice(i,1);//留在这里
+					tasklistArr.splice(i,1);											//留在这里
 					Storage.TaskChange();
 					}
 				}
@@ -1189,10 +1171,10 @@ var Tasklist = (function(mod){
 	return mod;
 })(Tasklist);
 /*=====================================================================倒计时==================================================*/
-var doCountdown;//在function timeCountdoen()外部声明。
+var doCountdown;																		//在function timeCountdoen()外部声明。
 function timeCountdown(endTime) {
 
-	//每次更新endTime日期后，清除上一次setInterval;
+																						//每次更新endTime日期后，清除上一次setInterval;
 	if(doCountdown) window.clearInterval(doCountdown);
 	var endTimeArr = endTime.split("-");
 	var end = new Date(endTimeArr[0],endTimeArr[1]-1,endTimeArr[2],0,0,0);
@@ -1201,9 +1183,9 @@ function timeCountdown(endTime) {
 	function setCountdown() {
 		var start = new Date();
 		var elapsed = Math.abs(end.getTime() - start.getTime());
-		var days =  Math.floor(elapsed/ (24 * 3600 * 1000));//1天 = 24小时*60分*60秒*1000毫秒
-		var hours = Math.floor((elapsed%(24 * 3600 * 1000))/(3600*1000)); //1时 = 60分*60秒*1000毫秒
-		var minutes  =Math.floor((elapsed%(24 * 3600 * 1000)%(3600*1000))/(60*1000));  //1分 = 60秒*1000毫秒
+		var days =  Math.floor(elapsed/ (24 * 3600 * 1000));							//1天 = 24小时*60分*60秒*1000毫秒
+		var hours = Math.floor((elapsed%(24 * 3600 * 1000))/(3600*1000)); 				//1时 = 60分*60秒*1000毫秒
+		var minutes  =Math.floor((elapsed%(24 * 3600 * 1000)%(3600*1000))/(60*1000));  	//1分 = 60秒*1000毫秒
 		var seconds  =Math.floor((elapsed%(24 * 3600 * 1000)%(3600*1000)%(60*1000))/1000); //1秒 = 1000毫秒
 		var returnText;
 		if(elapsed<0) {
@@ -1229,7 +1211,6 @@ Drag.prototype = {
 	//为每个任务列表组<div class="task-ul">添加有效放置的事件代理
 	_.$.delegate(_.$$("right-section")[0],"ul", "dragover", this.draginHandle);
 	_.$.delegate(_.$$("right-section")[0],"li", "dragover", this.draginHandle);
-
 	//在创建元素的时候为所有的<li class="task-list task-list">设置为可拖动元素
 	// _.$.delegate(_.$$("right-section")[0],"li", "focus", this.draggableHandle);
 	_.$.delegate(_.$$("right-section")[0],"li", "dragstart", this.dragstartHandle);
@@ -1241,20 +1222,19 @@ Drag.prototype = {
 	_.$.delegate(document,"li", "drop",this.dropHandle);
 	},
 
-
 	draginHandle:function (e) {
 		var hasClassName = /task-ul|task-list/gi;
 		if(hasClassName.test(e.target.className.toLowerCase())) {
 			e.preventDefault();
 		}
 	},
+
 	draggableHandle:function(e) {
 		var hasClassName = /task-list/gi;
 		if(hasClassName.test(e.target.className.toLowerCase())) {
 			e.target.draggable = true;
 		}
 	},
-
 
 	/*拖放某元素时，依次触发时间入下：dragstart drag dragend*/
 	dragstartHandle:function(e) {//拖拽开始瞬间触发
@@ -1294,7 +1274,6 @@ Drag.prototype = {
 	    if ( hasClassName.test(e.target.className.toLowerCase())) {
 	        e.target.style.background = "#222";
 	    }
-
 	},
 
 	dragleaveHandle:function ( e ) {
@@ -1315,11 +1294,11 @@ Drag.prototype = {
 			drapOn = e.target.parentNode;
 		}
 
-		console.log(e.clientX,e.clientY,e.target.offsetLeft,e.target.offsetHeight,e.target.offsetTop,e.target.offsetParent,drapOn.offsetTop);
+		// console.log(e.clientX,e.clientY,e.target.offsetLeft,e.target.offsetHeight,e.target.offsetTop,e.target.offsetParent,drapOn.offsetTop);
 		//e.target.offsetParent是e.target元素上面最近的已定位的元素
 
-		var top = e.clientY - drapOn.offsetTop;  //可拖放元素距离可放置目标元素最顶的距离
-		var num = Math.floor(top/45);            //num为鼠标停止上方的小方块个数
+		var top = e.clientY - drapOn.offsetTop;  									//可拖放元素距离可放置目标元素最顶的距离
+		var num = Math.floor(top/45);            									//num为鼠标停止上方的小方块个数
 		var allnum =  drapOn.getElementsByClassName("task-list");//
 		if(num>allnum.length+1)
 			num = allnum.length;
@@ -1328,7 +1307,7 @@ Drag.prototype = {
 	    dragged.parentNode.removeChild( dragged );
 		drapOn.insertBefore(dragged,allnum[num]);
 
-	    // e.preventDefault();阻止默认动作（如打开一些元素的链接）???
+	   																				// e.preventDefault();阻止默认动作（如打开一些元素的链接）
 	}
 };
 
@@ -1341,7 +1320,7 @@ var Inputprompt = {
 		alertText.innerHTML = innerText;
 		alertText.style.color = color;
 	},
-	noteText:function(id,innerText,color) {                                //直接使用
+	noteText:function(id,innerText,color) {                               			 //直接使用
 		var alertText = _.$(id);
 		console.log(alertText);
 		alertText.style.display = "inline-block";
@@ -1351,8 +1330,8 @@ var Inputprompt = {
 			window.clearTimeout(treeSearch);
 			console.log("clean");
 		}
-		// treeSearch = window.setTimeout(this.HideAlertText,2000);          //为什么一加参数就自动执行了？？
-		treeSearch = window.setTimeout(function() {							 //用匿名函数 不会立即执行
+		// treeSearch = window.setTimeout(this.HideAlertText,2000);          		//为什么一加参数就自动执行了
+		treeSearch = window.setTimeout(function() {							 		//用匿名函数 不会立即执行
 			console.log(id);
 			var alertText = _.$(id);
 			alertText.style.display = "none";
@@ -1365,14 +1344,14 @@ var Inputprompt = {
 		var trimReg = /^\s+|\s+_.$/g;
 		return e.value.replace(trimReg,"");
 	},
-	checkInputText: function(id,e) {                                          //有直接使用
-		var value = this.trim(e);                                             //原始输入去除首尾空格
+	checkInputText: function(id,e) {                                         
+		var value = this.trim(e);                                            		//原始输入去除首尾空格
 		if(value===null||value==="") {
 			this.noteText(id,"查询不能为空","#EC9B69");
 		} 
 		return value;
 	},
-    addcheckInputText: function(id,e) {                                       //有直接使用
+    addcheckInputText: function(id,e) {                                       		
 		var value = this.trim(e);        
 		if(value===null||value==="") {
 			this.addnoteText(id,"输入任务标题不能为空","#EC9B69");
@@ -1384,7 +1363,7 @@ var Inputprompt = {
 };
 /*========================================================== localStorage ==================================================*/
 var Storage = (function(mod) {
-	mod.TaskChange = function() {//删除、添加、编辑快速任务和普通任务公用一个
+	mod.TaskChange = function() {													//删除、添加、编辑快速任务和普通任务公用一个
 		allTasks.list = [];
 		for(var i=0;i<tasklistArr.length;i++) {
 			allTasks.list.push(tasklistArr[i]);
@@ -1392,12 +1371,12 @@ var Storage = (function(mod) {
 		localStorage.setItem('allTasks', JSON.stringify(allTasks));
 	};
 	mod.treeNodeIdChange = function(jsq) {
-		treeClassifyIdArr.list = [];							                  //将id数组中的元素添加到对象中
+		treeClassifyIdArr.list = [];							                 	//将id数组中的元素添加到对象中
 		for(var j=0;j<d.fatherIdArr.length;j++) {
 			treeClassifyIdArr.list.push(d.fatherIdArr[j]);
 		}
-		localStorage.setItem('treeClassify', JSON.stringify(treeClassifyIdArr));  //将更新的treeClassifyIdArr存入设置的值treeClassify中
-		localStorage.setItem('d.fatherIdjsq', d.fatherIdjsq);                         //将更新的d.fatherIdjsq存入设置的值d.fatherIdjsq中
+		localStorage.setItem('treeClassify', JSON.stringify(treeClassifyIdArr));  	//将更新的treeClassifyIdArr存入设置的值treeClassify中
+		localStorage.setItem('d.fatherIdjsq', d.fatherIdjsq);                       //将更新的d.fatherIdjsq存入设置的值d.fatherIdjsq中
 
 	};
 
@@ -1408,9 +1387,9 @@ var Storage = (function(mod) {
 		preOrderAdd(d.treedata);
 		function preOrderAdd(treeframe) {
 			for(var key in treeframe) {
-				if(jsq===d.fatherIdArr.indexOf(choseDiv.id)) {  //找到被选中的结点
-					d.fatherIdArr.push("fatherId"+d.fatherIdjsq); //先在数组中添加新的id，使新的结点渲染到页面上
-					treeframe[key][value] = {};               //更新树状结构，添加结点(为记录树的结构的对象添加属性)
+				if(jsq===d.fatherIdArr.indexOf(choseDiv.id)) {  					//找到被选中的结点
+					d.fatherIdArr.push("fatherId"+d.fatherIdjsq); 					//先在数组中添加新的id，使新的结点渲染到页面上
+					treeframe[key][value] = {};               						//更新树状结构，添加结点(为记录树的结构的对象添加属性)
 					preOrder2(treeframe[key]);
 					break;
 				}
@@ -1420,7 +1399,7 @@ var Storage = (function(mod) {
 				}
 			}
 		}
-		function preOrder2(treeframe) {           //jsq记录被选中结点的的最后一个子节点
+		function preOrder2(treeframe) {          									//jsq记录被选中结点的的最后一个子节点
 			for(var key in treeframe) {
 				jsq++;
 				if(typeof treeframe[key] === "object") {
@@ -1428,7 +1407,7 @@ var Storage = (function(mod) {
 				}
 			}
 		}
-		localStorage.setItem('treeframe', JSON.stringify(d.treedata));//将更新的treedata存入设置的值treeframe中
+		localStorage.setItem('treeframe', JSON.stringify(d.treedata));				//将更新的treedata存入设置的值treeframe中
 		return jsq;
 	};
 
@@ -1461,7 +1440,7 @@ var Storage = (function(mod) {
 
 })(Storage||{});
 function renderData() {
-	//设定的初始普通任务
+																					//设定的初始普通任务
 	var value1 = ["普通任务列表","添加任务","添加新分类","点击对勾完成任务"];
 	var content1 = ["可以设定任务的名称、任务描述、任务截止时间","通过左侧自定义分类的加号图标添加任务","通过左侧自定义分类的文件夹图标添加新分类","点击对勾完成任务"];
 	var endTime1 = ["2016-05-20","2016-06-20","2017-07-20","2018-08-20"];
@@ -1477,7 +1456,7 @@ function renderData() {
 		node.data = childDiv;
 		var hahah = _.$("fatherId1");
 		console.log(hahah);
-		hahah.appendChild(childDiv);//新节点加入到选中节点中
+		hahah.appendChild(childDiv);												//新节点加入到选中节点中
 		var taskone = {
 			"fatherId":"fatherId1",
 			"title": value1[i],
@@ -1487,7 +1466,7 @@ function renderData() {
 			"endTime": endTime,
 			"type" : "normal"
 		};
-		var newtask = new Tasklist(taskone);//把任务添加到右侧任务列表中
+		var newtask = new Tasklist(taskone);										//把任务添加到右侧任务列表中
 		newtask.init(newtask);
 		tasklistArr.push(newtask);
 	}
@@ -1508,7 +1487,7 @@ function renderData() {
 			"cnode": childDivi,
 			"type" : "fast"
 		};
-		var newtask2 = new Tasklist(tasktwo);//把任务添加到右侧任务列表中
+		var newtask2 = new Tasklist(tasktwo);										//把任务添加到右侧任务列表中
 		newtask2.init(newtask2);
 		tasklistArr.push(newtask2);
 	}
@@ -1527,19 +1506,16 @@ var treeClassifyIdArr = {
 };
 var  storagetree = function() {
 	if(!localStorage.getItem('treeframe')) {
-		console.log("!!!!!localStorage.getItem('treeframe')");//之间没有加载过，正常加载
+		console.log("!!!!!localStorage.getItem('treeframe')");					 	//之间没有加载过，正常加载
 	  	initTree();
 	} else {
-
-		// console.log(" localStorage.getItem('treeframe')");//有加载过，加载储存的，然后添加listener
-	  	gettreeframeStorage();
-	 
+	  	gettreeframeStorage();	 
 	}
 	function gettreeframeStorage() {
 	 	var restoredtreeframe = JSON.parse(localStorage.getItem('treeframe'));
 		console.log("=========================================storage===========================================================");
 		console.log(restoredtreeframe);
-		treedata = restoredtreeframe;
+		d.treedata = restoredtreeframe;
 
 		if(localStorage.getItem('treeClassify')) {
 			
@@ -1561,11 +1537,11 @@ var  storage = function() {
 	  	getTreeClassifyStorage();
 	}
 	if(!localStorage.getItem('allTasks')) {
-		console.log("!!!!!localStorage.getItem('allTasks')");//之间没有加载过，正常加载
+		console.log("!!!!!localStorage.getItem('allTasks')");						//之间没有加载过，正常加载
 		renderData();
 	  	
 	} else {
-		console.log(" localStorage.getItem('allTasks')");//有加载过，加载储存的，然后添加listener
+		console.log(" localStorage.getItem('allTasks')");							//有加载过，加载储存的，然后添加listener
 	  	getTaskStorage();
 	 
 	}
@@ -1590,11 +1566,9 @@ var  storage = function() {
 		var restoredallTasks = JSON.parse(localStorage.getItem('allTasks'));
 		console.log("========================================= storage Tasklist ===================================================");
 		console.log(restoredallTasks);
-		//_.$("task-ul-fast").innerHTML = "<header class='task-date'><span>快速任务</span></header>";
 		while(_.$("task-ul-fast").getElementsByTagName("li").length) {
 			_.$("task-ul-fast").removeChild(nowTasklist[0]);
 		}
-		// _.$("task-ul-one").innerHTML  = "<header class='task-date'><span>任务列表</span><span id='endtime-sort'><i class='fa fa-sort fa-lg' aria-hidden='true'></i></span></header>";
 		while(_.$("task-ul-one").getElementsByTagName("li").length) {
 			_.$("task-ul-one").removeChild(nowTasklist[0]);
 		}
@@ -1616,28 +1590,28 @@ var  storage = function() {
 				restoredallTasks.list[i].pnode = _.$(restoredallTasks.list[i].fatherId);
 				restoredallTasks.list[i].cnode = childDiv;
 				choseDiv = _.$(restoredallTasks.list[i].fatherId);
-				Order(rt);//遍历找到选中节点 
+				Order(rt);															//遍历找到选中节点 
 				
 			}
 
-			var newtask2 = new Tasklist(restoredallTasks.list[i]);//把任务添加到右侧任务列表中
+			var newtask2 = new Tasklist(restoredallTasks.list[i]);					//把任务添加到右侧任务列表中
 			newtask2.init(newtask2);
 			tasklistArr.push(newtask2);
 		}//for
 
 		function Order(rt) {
-			if(rt.data===choseDiv) {//选中节点图标更新
+			if(rt.data===choseDiv) {												//选中节点图标更新
 				rt.childNode.push(node);
 				node.FatherNode = rt;
 				rt.data.firstChild.style.display = "inline-block";
 				rt.data.firstChild.className = "fa fa-folder-open-o tree-title-sign";
 				node.data = childDiv;
 				console.log(rt.data.id);
-				//文件夹内部添加任务，文件夹后面的数字+1
+																					//文件夹内部添加任务，文件夹后面的数字+1
 				var fileTitleName = rt.data.getElementsByClassName("tree-title")[0].innerHTML;
 				rt.data.getElementsByClassName("tree-title")[0].innerHTML = numOfTasks(fileTitleName,"add");
 
-				for(var i=0;i<rt.childNode.length;i++) {//选中节点子节点展开
+				for(var i=0;i<rt.childNode.length;i++) {							//选中节点子节点展开
 					rt.childNode[i].data.style.display = "block";
 				}
 				return;
@@ -1653,9 +1627,7 @@ var  storage = function() {
 };
 
 function initAll() {
-	storagetree();
-	//initTree();//要在浮出层之前加载 why?
-
+	storagetree();																	//要在浮出层之前加载
 	var addClassify = new SuperPopup(d.popupAddClassify);
 	addClassify.init(addClassify);
 	var addTask = new SuperPopup(d.popupAddTask);
@@ -1681,6 +1653,6 @@ function initAll() {
 
 }
 return {
-        initAll: initAll
-    };
+    initAll: initAll
+};
 });
